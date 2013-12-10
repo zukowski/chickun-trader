@@ -72,7 +72,7 @@ class @DepthTable
       parts = d.value.toString().split(".")
       output = "<span class='number'>#{parts[0]}.</span>"
       if parts.length > 1
-        output += "<span class='fraction'>#{parts[1].substr(0,5)}</span>"
+        output += "<span class='fraction'>#{parts[1]}</span>"
       else
         output += "<span class='fraction'>000000</span>"
         
