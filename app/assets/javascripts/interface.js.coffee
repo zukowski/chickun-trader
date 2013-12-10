@@ -1,7 +1,17 @@
 $ ->
-  @depth_table = new DepthTable("btce","ltc_usd")
+  #@depth_table = new DepthTable("btce","ltc_usd")
   @chart = new TradeChart("chart",1)
-
+  window.chart = @chart
+  
+  $("#chart").mousemove (e) ->
+    offset = $(this).offset()
+    rel_x = e.pageX - offset.left
+    rel_y = e.pageY - offset.top
+    $(this).css("cursor","none")
+    $(this).find("line.cross-x").attr("y1",rel_y).attr("y2",rel_y)
+    $(this).find("line.cross-y").attr("x1",rel_x).attr("x2",rel_x)
+    console.log(window.chart.x(rel_x) + "," + window.chart.y(rel_y))
+ 
   window.appendToData = (x) ->
     @chart.appendToData(x)
   

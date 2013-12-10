@@ -99,12 +99,14 @@ class @Candle
 class @TradeChart
   constructor: (@id, @hour_range) ->
     @uri = "/data/#{@pair}/trades"
-    @start = new Date("2013-08-01").getTime() / 1000
+    @start = new Date("2013-09-01").getTime() / 1000
     @end = new Date("2013-12-05").getTime() / 1000
     @data = []
     @width = $(window).width() - 200
     @height = $(window).height() * 0.75
     @margin = 30
+    @y
+    @x
     @chart = d3.select("##{@id}")
                .append("svg:svg")
                .attr("class", "chart")
@@ -126,7 +128,8 @@ class @TradeChart
       a
     else
       b
- 
+
+  
   build_chart: (data) ->
     @y = d3.scale.linear()
            .domain([d3.min(data.map( (d) -> d.Low)), d3.max(data.map( (d) -> d.High))])
@@ -135,22 +138,45 @@ class @TradeChart
            .domain([@start,@end])
            .range([@margin,@width-@margin])
     
+    @chart.on "mousemove", =>
+      console.log(@x(d3.event.x) + "," + @y(d3.event.y))
+ 
+    @chart.append("svg:line")
+          .attr("class","cross-x")
+          .attr("x1", 0)
+          .attr("x2", @width)
+          .attr("y1", 0)
+          .attr("y2", 0)
+          .attr("stroke", "#777")
+          .attr("fill", "none")
+          .attr("stroke-width", "1")
+
+    @chart.append("svg:line")
+          .attr("class","cross-y")
+          .attr("x1", 0)
+          .attr("x2", 0)
+          .attr("y1", 0)
+          .attr("y2", @height)
+          .attr("stroke", "#777")
+          .attr("stroke-width", "1px")
+          .attr("vector-effect","non-scaling-stroke")
+ 
     @chart.selectAll("line.x")
         .data(@x.ticks(20))
         .enter().append("svg:line")
         .attr("class", "x")
         .attr("x1", @x)
         .attr("x2", @x)
-        .attr("y1", @margin)
-        .attr("y2", @height - @margin)
+        .attr("y1", @height - @margin)
+        .attr("y2", @height - @margin - 10)
         .attr("stroke", "#666")
 
     @chart.selectAll("line.y")
         .data(@y.ticks(10))
         .enter().append("svg:line")
         .attr("class", "y")
-        .attr("x1", @margin)
-        .attr("x2", @width - @margin)
+        .attr("x1", @width - @margin - 20)
+        .attr("x2", @width - 40)
         .attr("y1", @y)
         .attr("y2", @y)
         .attr("stroke", "#666")
@@ -172,7 +198,7 @@ class @TradeChart
         .attr("class", "yrule")
         .attr("x", @width - @margin)
         .attr("y", @y)
-        .attr("dy", 0)
+        .attr("dy", 3)
         .attr("dx", 20)
         .attr("text-anchor", "middle")
         .attr("fill", "#fff")
@@ -195,10 +221,10 @@ class @TradeChart
     @chart.selectAll("rect")
         .data(data)
         .enter().append("svg:rect")
-        .attr("x", (d) => @x(d.timestamp) - 1 )
+        .attr("x", (d) => @x(d.timestamp) + 4 )
         .attr("y", (d) => @y(d3.max([d.Open, d.Close])))
         .attr("height", (d) => (@y(d3.min([d.Open, d.Close]))-@y(d3.max([d.Open, d.Close]))))
-        .attr("width", (d) => 5)
+        .attr("width", (d) => 4)
         .attr("stroke", (d) ->
                           if d.Open > d.Close
                             "rgb(255,40,40)"
@@ -209,6 +235,8 @@ class @TradeChart
                           "rgb(100,0,0)"
                         else
                           "rgb(0,70,0)")
+    
+    @chart.selectAll("*").attr("shape-rendering","crispEdges")
 
   appendToData: (x) ->
     if @data.length > 0
@@ -237,7 +265,7 @@ class @TradeChart
       url
 
   fetchData: ->
-    url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20in%20('AMZN')%20and%20startDate%20%3D%20'2012-08-01'%20and%20endDate%20%3D%20'2013-12-05'&diagnostics=true&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
+    url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20in%20('AMZN')%20and%20startDate%20%3D%20'2013-09-01'%20and%20endDate%20%3D%20'2013-12-05'&diagnostics=true&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
     $.ajax url,
       { dataType: "json" }
     .done (data) =>
