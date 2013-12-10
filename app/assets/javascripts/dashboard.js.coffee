@@ -177,20 +177,7 @@ class @TradeChart
         .attr("text-anchor", "middle")
         .attr("fill", "#fff")
         .text(String)
-    
-    @chart.selectAll("rect")
-        .data(data)
-        .enter().append("svg:rect")
-        .attr("x", (d) => @x(d.timestamp))
-        .attr("y", (d) => @y(d3.max([d.Open, d.Close])))
-        .attr("height", (d) => (@y(d3.min([d.Open, d.Close]))-@y(d3.max([d.Open, d.Close]))))
-        .attr("width", (d) => 0.5 * (@width - 2*@margin)/data.length)
-        .attr("fill", (d) ->
-                        if d.Open > d.Close
-                          "red"
-                        else
-                          "green")
-
+   
     @chart.selectAll("line.stem")
         .data(data)
         .enter().append("svg:line")
@@ -201,9 +188,27 @@ class @TradeChart
         .attr("y2", (d) => @y(d.Low))
         .attr("stroke", (d) ->
                           if d.Open > d.Close
-                            "red"
+                            "rgb(255,40,40)"
                           else
-                            "green")
+                            "rgb(100,255,100)")
+
+    @chart.selectAll("rect")
+        .data(data)
+        .enter().append("svg:rect")
+        .attr("x", (d) => @x(d.timestamp) - 1 )
+        .attr("y", (d) => @y(d3.max([d.Open, d.Close])))
+        .attr("height", (d) => (@y(d3.min([d.Open, d.Close]))-@y(d3.max([d.Open, d.Close]))))
+        .attr("width", (d) => 5)
+        .attr("stroke", (d) ->
+                          if d.Open > d.Close
+                            "rgb(255,40,40)"
+                          else
+                            "rgb(100,255,100")
+        .attr("fill", (d) ->
+                        if d.Open > d.Close
+                          "rgb(100,0,0)"
+                        else
+                          "rgb(0,70,0)")
 
   appendToData: (x) ->
     if @data.length > 0
