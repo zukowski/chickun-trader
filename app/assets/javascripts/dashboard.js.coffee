@@ -177,12 +177,12 @@ class @TradeChart
         .attr("text-anchor", "middle")
         .attr("fill", "#fff")
         .text(String)
-
+    
     @chart.selectAll("rect")
         .data(data)
         .enter().append("svg:rect")
         .attr("x", (d) => @x(d.timestamp))
-        .attr("y", (d) => console.log(d); @y(d3.max([d.Open, d.Close])))
+        .attr("y", (d) => @y(d3.max([d.Open, d.Close])))
         .attr("height", (d) => (@y(d3.min([d.Open, d.Close]))-@y(d3.max([d.Open, d.Close]))))
         .attr("width", (d) => 0.5 * (@width - 2*@margin)/data.length)
         .attr("fill", (d) ->
@@ -206,14 +206,13 @@ class @TradeChart
                             "green")
 
   appendToData: (x) ->
-    console.log x
     if @data.length > 0
       return
     
     @data = x.query.results.quote
       
     for d,i in @data
-      d.timestamp = (new Date(d.date).getTime() / 1000)
+      d.timestamp = (new Date(d.Date).getTime() / 1000)
   
     @data = @data.sort (x, y) -> (x.timestamp - y.timestamp)
     @build_chart(@data)
@@ -237,6 +236,7 @@ class @TradeChart
     $.ajax url,
       { dataType: "json" }
     .done (data) =>
+      console.log(data)
       @appendToData(data)
  
     return
