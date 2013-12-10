@@ -1,6 +1,6 @@
 $ ->
   @depth_table = new DepthTable("btce","ltc_usd")
-  @chart = new TradeChart("chart",1) 
+  @chart = new TradeChart("chart",1)
 
   window.appendToData = (x) ->
     @chart.appendToData(x)

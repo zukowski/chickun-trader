@@ -23,12 +23,12 @@ class @Ticker
     if data.last == data.buy
       d3.select(".last.#{@exchange}.#{@pair}, #depth.#{@exchange}.#{@pair} .last").attr("class","last buy")
     else
-      d3.select(".last.#{@exchange}.#{@pair}, #depth.#{@exchange}.#{@pair} .last").attr("class","last sell") 
+      d3.select(".last.#{@exchange}.#{@pair}, #depth.#{@exchange}.#{@pair} .last").attr("class","last sell")
 
 class @DepthTable
   constructor: (@exchange, @pair) ->
     @uri =
-      "btce": "/data/#{@exchange}/#{@pair}/depth" 
+      "btce": "/data/#{@exchange}/#{@pair}/depth"
     @exchange_names =
       "btce": "BTC-e"
     @pair_names =
@@ -72,7 +72,7 @@ class @DepthTable
       parts = d.value.toString().split(".")
       output = "<span class='number'>#{parts[0]}.</span>"
       if parts.length > 1
-        output += "<span class='fraction'>#{parts[1].substr(0,5)}</span>" 
+        output += "<span class='fraction'>#{parts[1].substr(0,5)}</span>"
       else
         output += "<span class='fraction'>000000</span>"
         
@@ -91,14 +91,14 @@ class @Candle
     @init()
 
   init: ->
-    @now = new Date() 
+    @now = new Date()
     @now_utc = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds())
     @start_time = @now.utc - (@now.utc % 60)
     
 
 class @TradeChart
   constructor: (@id, @hour_range) ->
-    @uri = "/data/#{@pair}/trades"    
+    @uri = "/data/#{@pair}/trades"
     @start = new Date("2013-08-01").getTime() / 1000
     @end = new Date("2013-12-05").getTime() / 1000
     @data = []
@@ -119,7 +119,7 @@ class @TradeChart
     if a < b
       a
     else
-      b		     
+      b
 
   max: (a, b) ->
     if a > b
@@ -173,7 +173,7 @@ class @TradeChart
         .attr("x", @width - @margin)
         .attr("y", @y)
         .attr("dy", 0)
-        .attr("dx", 20)		 
+        .attr("dx", 20)
         .attr("text-anchor", "middle")
         .attr("fill", "#fff")
         .text(String)
@@ -196,7 +196,7 @@ class @TradeChart
         .enter().append("svg:line")
         .attr("class", "stem")
         .attr("x1", (d) => @x(d.timestamp) + 0.25 * (@width - 2 * @margin) / data.length)
-        .attr("x2", (d) => @x(d.timestamp) + 0.25 * (@width - 2 * @margin) / data.length)		    
+        .attr("x2", (d) => @x(d.timestamp) + 0.25 * (@width - 2 * @margin) / data.length)
         .attr("y1", (d) => @y(d.High))
         .attr("y2", (d) => @y(d.Low))
         .attr("stroke", (d) ->
@@ -213,13 +213,13 @@ class @TradeChart
     @data = x.query.results.quote
       
     for d,i in @data
-      d.timestamp = (new Date(d.date).getTime() / 1000)	 
+      d.timestamp = (new Date(d.date).getTime() / 1000)
   
     @data = @data.sort (x, y) -> (x.timestamp - y.timestamp)
-    @build_chart(@data) 
+    @build_chart(@data)
 
   buildQuery: ->
-      symbol = window.location.hash;
+      symbol = window.location.hash
       if symbol == ""
         symbol = "AMZN"
 
@@ -239,10 +239,10 @@ class @TradeChart
     .done (data) =>
       @appendToData(data)
  
-    return   
-    url = @buildQuery() 
+    return
+    url = @buildQuery()
     scriptElement = document.createElement("SCRIPT")
     scriptElement.type = "text/javascript"
     # i add to the url the call back function
-    scriptElement.src = url;
-    document.getElementsByTagName("HEAD")[0].appendChild(scriptElement)	
+    scriptElement.src = url
+    document.getElementsByTagName("HEAD")[0].appendChild(scriptElement)
